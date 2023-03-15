@@ -1,19 +1,34 @@
 import { Table } from './Contacts.styled';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux/es/exports';
+import { deleteContact } from 'redux/contactsSlice';
+import { getContactsList, getFilter } from 'redux/selectors';
+import { useSelector } from 'react-redux/es/exports';
 
-export const Contacts = ({ contactList, deleteContact }) => {
+export const Contacts = () => {
+  const dispatch = useDispatch();
+
+  const contactsList = useSelector(getContactsList);
+  const filterQuery = useSelector(getFilter);
+
+  const normalizedFilter = filterQuery.toLowerCase();
+  const filteredContacts = contactsList.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
+  );
+
+  const deleteContacts = id => {
+    dispatch(deleteContact(id));
+  };
+
   return (
     <Table>
       <tbody>
-        {contactList.map(contact => {
+        {filteredContacts.map(({ id, name, number }) => {
           return (
-            <tr key={contact.id}>
-              <td>{contact.name}</td>
-              <td>{contact.number}</td>
+            <tr key={id}>
+              <td>{name}</td>
+              <td>{number}</td>
               <td>
-                <button onClick={() => deleteContact(contact.id)}>
-                  Delete
-                </button>
+                <button onClick={() => deleteContacts(id)}>Delete</button>
               </td>
             </tr>
           );
@@ -21,13 +36,4 @@ export const Contacts = ({ contactList, deleteContact }) => {
       </tbody>
     </Table>
   );
-};
-
-Contacts.propTypes = {
-  contactList: PropTypes.arrayOf(
-    PropTypes.shape({
-      contact: PropTypes.object,
-    })
-  ),
-  deleteContact: PropTypes.func.isRequired,
 };
