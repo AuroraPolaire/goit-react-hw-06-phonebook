@@ -20,9 +20,9 @@ const contactsSlice = createSlice({
       // state.list.push(action.payload);
     },
     deleteContact(state, action) {
-      // return state.list.filter(contact => contact.id !== action.payload);
-      const index = state.list.findIndex(task => task.id === action.payload);
-      state.list.splice(index, 1);
+      state.list = state.list.filter(contact => contact.id !== action.payload);
+      // const index = state.list.findIndex(task => task.id === action.payload);
+      // state.list.splice(index, 1);
     },
   },
 });
